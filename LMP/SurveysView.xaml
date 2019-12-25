@@ -3,9 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:LMP"
              mc:Ignorable="d"
              x:Class="LMP.SurveysView"
              Title="Encuestas">
+    <ContentPage.BindingContext>
+        <local:Data />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:TeamColorConverter x:Key="CasacaConverter" />
+
+            <DataTemplate x:Key="SurveyDataTemplate">
+                <ViewCell>
+                    <StackLayout Margin="10">
+                        <Label Text="{Binding Name}"
+                               FontSize="Medium" />
+                        <Label Text="{Binding Birthdate, StringFormat='{}{0:dd/MM/yyyy}'}" />
+                        <Label Text="{Binding FavoriteTeam}"
+                               TextColor="{Binding FavoriteTeam, Converter={StaticResource CasacaConverter}}" />
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,7 +38,10 @@
         <Button Text="+"
                 Clicked="AddSurveyButton_Clicked" />
 
-        <StackLayout Grid.Row="1"
-                     x:Name="SurveysPanel" />
+        <ListView Grid.Row="1"
+                  HasUnevenRows="True"
+                  ItemTemplate="{StaticResource SurveyDataTemplate}"
+                  ItemsSource="{Binding Surveys}"
+                  SelectedItem="{Binding SelectedSurvey, Mode=OneWayToSource}" />
     </Grid>
 </ContentPage>
