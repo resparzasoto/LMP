@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace LMP
@@ -37,14 +38,23 @@ namespace LMP
             }
         }
 
+        public ICommand NewSurveyCommand { get; set; }
+
         public Data()
         {
+            NewSurveyCommand = new Command(NewSurveyCommandExecute);
+
             Surveys = new ObservableCollection<Survey>();
 
             MessagingCenter.Subscribe<SurveyDetailsView, Survey>(this, Messages.NewSurveyComplete, (sender, args) =>
             {
                 Surveys.Add(args);
             });
+        }
+
+        private void NewSurveyCommandExecute()
+        {
+            MessagingCenter.Send(this, Messages.NewSurvey);
         }
     }
 }

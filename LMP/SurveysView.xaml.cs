@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,11 +10,11 @@ namespace LMP
         public SurveysView()
         {
             InitializeComponent();
-        }
 
-        private async void AddSurveyButton_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new SurveyDetailsView(), true);
+            MessagingCenter.Subscribe<Data>(this, Messages.NewSurvey, async (sender) =>
+            {
+                await Navigation.PushAsync(new SurveyDetailsView(), true);
+            });
         }
     }
 }

@@ -6,6 +6,8 @@
         {
         }
 
+        public const string NewSurvey = "NewSurvey";
+
         public const string NewSurveyComplete = "NewSurveyComplete";
     }
 }
