@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:LMP"
+             xmlns:viewModel="clr-namespace:LMP.ViewModels"
+             xmlns:converters="clr-namespace:LMP.Converters"
+             mc:Ignorable="d"
+             x:Class="LMP.Views.SurveysView"
+             Title="{Static local:Literals.SurveysViewTitle}">
+    <ContentPage.BindingContext>
+        <viewModel:SurveysViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TeamColorConverter x:Key="CasacaConverter" />
+
+            <DataTemplate x:Key="SurveyDataTemplate">
+                <ViewCell>
+                    <StackLayout Margin="10">
+                        <Label Text="{Binding Name}"
+                               FontSize="Medium" />
+                        <Label Text="{Binding Birthdate, StringFormat='{}{0:dd/MM/yyyy}'}" />
+                        <Label Text="{Binding FavoriteTeam}"
+                               TextColor="{Binding FavoriteTeam, Converter={StaticResource CasacaConverter}}" />
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Button Text="+"
+                Command="{Binding NewSurveyCommand}" />
+
+        <ListView Grid.Row="1"
+                  HasUnevenRows="True"
+                  ItemTemplate="{StaticResource SurveyDataTemplate}"
+                  ItemsSource="{Binding Surveys}"
+                  SelectedItem="{Binding SelectedSurvey, Mode=OneWayToSource}" />
+    </Grid>
+</ContentPage>

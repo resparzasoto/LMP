@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using LMP.Models;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace LMP
+namespace LMP.ViewModels
 {
-    public class Data : NotificationObject
+    public class SurveysViewModel : NotificationObject
     {
         private ObservableCollection<Survey> surveys;
 
@@ -40,13 +41,13 @@ namespace LMP
 
         public ICommand NewSurveyCommand { get; set; }
 
-        public Data()
+        public SurveysViewModel()
         {
             NewSurveyCommand = new Command(NewSurveyCommandExecute);
 
             Surveys = new ObservableCollection<Survey>();
 
-            MessagingCenter.Subscribe<SurveyDetailsView, Survey>(this, Messages.NewSurveyComplete, (sender, args) =>
+            MessagingCenter.Subscribe<SurveyDetailsViewModel, Survey>(this, Messages.NewSurveyComplete, (sender, args) =>
             {
                 Surveys.Add(args);
             });

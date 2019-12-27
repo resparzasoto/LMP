@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using LMP.Views;
+using Xamarin.Forms;
 
 namespace LMP
 {

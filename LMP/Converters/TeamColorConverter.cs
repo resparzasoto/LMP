@@ -2,7 +2,7 @@
 using System.Globalization;
 using Xamarin.Forms;
 
-namespace LMP
+namespace LMP.Converters
 {
     public class TeamColorConverter : IValueConverter
     {
