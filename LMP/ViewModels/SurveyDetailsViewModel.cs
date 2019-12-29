@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace LMP.ViewModels
@@ -123,7 +124,7 @@ namespace LMP.ViewModels
             return !(string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(FavoriteTeam) || Birthdate.Date == Literals.DefaultDate);
         }
 
-        private void EndSurveyCommandExecute()
+        private async void EndSurveyCommandExecute()
         {
             var newSurvey = new Survey()
             {
@@ -131,6 +132,23 @@ namespace LMP.ViewModels
                 Birthdate = Birthdate,
                 FavoriteTeam = FavoriteTeam
             };
+
+            try
+            {
+                var request = new GeolocationRequest(GeolocationAccuracy.Best);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if (location != null)
+                {
+                    newSurvey.Lat = location.Latitude;
+                    newSurvey.Lon = location.Longitude;
+                }
+            }
+            catch (Exception)
+            {
+                newSurvey.Lat = 0d;
+                newSurvey.Lon = 0d;
+            }
 
             MessagingCenter.Send(this, Messages.NewSurveyComplete, newSurvey);
         }

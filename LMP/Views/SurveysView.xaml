@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:iOS="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             iOS:Page.UseSafeArea="True"
              xmlns:local="clr-namespace:LMP"
              xmlns:viewModel="clr-namespace:LMP.ViewModels"
              xmlns:converters="clr-namespace:LMP.Converters"
@@ -20,11 +22,20 @@
             <DataTemplate x:Key="SurveyDataTemplate">
                 <ViewCell>
                     <StackLayout Margin="10">
-                        <Label Text="{Binding Name}"
-                               FontSize="Medium" />
-                        <Label Text="{Binding Birthdate, StringFormat='{}{0:dd/MM/yyyy}'}" />
-                        <Label Text="{Binding FavoriteTeam}"
+                        <Label FontSize="Title"
+                               FontAttributes="Bold"
+                               Text="{Binding Name}" />
+                        <Label FontSize="Body"
+                               Text="{Binding Birthdate, StringFormat='{0:dd/MM/yyyy}'}" />
+                        <Label FontSize="Body"
+                               Text="{Binding FavoriteTeam}"
                                TextColor="{Binding FavoriteTeam, Converter={StaticResource CasacaConverter}}" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label FontSize="Body"
+                                   Text="{Binding Lat, Mode=OneWay, StringFormat='Lat: {0:N4}'}" />
+                            <Label FontSize="Body"
+                                   Text="{Binding Lon, Mode=OneWay, StringFormat='Lon: {0:N4}'}" />
+                        </StackLayout>
                     </StackLayout>
                 </ViewCell>
             </DataTemplate>
