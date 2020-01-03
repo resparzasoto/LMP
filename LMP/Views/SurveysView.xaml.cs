@@ -1,5 +1,4 @@
-﻿using LMP.ViewModels;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace LMP.Views
@@ -10,11 +9,6 @@ namespace LMP.Views
         public SurveysView()
         {
             InitializeComponent();
-
-            MessagingCenter.Subscribe<SurveysViewModel>(this, Messages.NewSurvey, async (sender) =>
-            {
-                await Navigation.PushAsync(new SurveyDetailsView(), true);
-            });
         }
     }
 }

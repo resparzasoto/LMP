@@ -1,27 +1,27 @@
-﻿using LMP.Views;
-using Xamarin.Forms;
+﻿using LMP.ViewModels;
+using LMP.Views;
+using Prism.Ioc;
+using Prism.Unity;
 
 namespace LMP
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        public App()
+        protected override async void OnInitialized()
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new SurveysView());
+            await NavigationService.NavigateAsync($"{nameof(LoginView)}");
         }
 
-        protected override void OnStart()
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-        }
-
-        protected override void OnSleep()
-        {
-        }
-
-        protected override void OnResume()
-        {
+            containerRegistry.RegisterForNavigation<LoginView, LoginViewModel>();
+            containerRegistry.RegisterForNavigation<MainView>();
+            containerRegistry.RegisterForNavigation<RootNavigationPage>();
+            containerRegistry.RegisterForNavigation<SurveysView, SurveysViewModel>();
+            containerRegistry.RegisterForNavigation<SurveyDetailsView, SurveyDetailsViewModel>();
+            containerRegistry.RegisterForNavigation<AboutView, AboutViewModel>();
         }
     }
 }

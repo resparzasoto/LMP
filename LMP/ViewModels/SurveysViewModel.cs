@@ -1,12 +1,32 @@
 ﻿using LMP.Models;
+using LMP.Views;
+using Prism.Commands;
+using Prism.Navigation;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Xamarin.Forms;
 
 namespace LMP.ViewModels
 {
-    public class SurveysViewModel : NotificationObject
+    public class SurveysViewModel : ViewModelBase
     {
+        private readonly INavigationService navigationService;
+
+        private string title;
+
+        public string Title
+        {
+            get { return title; }
+            set 
+            {
+                if (title == value)
+                {
+                    return;
+                }
+                title = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ObservableCollection<Survey> surveys;
 
         public ObservableCollection<Survey> Surveys
@@ -19,7 +39,7 @@ namespace LMP.ViewModels
                     return;
                 }
                 surveys = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -35,27 +55,36 @@ namespace LMP.ViewModels
                     return;
                 }
                 selectedSurvey = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
         public ICommand NewSurveyCommand { get; set; }
 
-        public SurveysViewModel()
+        public SurveysViewModel(INavigationService navigationService)
         {
-            NewSurveyCommand = new Command(NewSurveyCommandExecute);
+            Title = "Encuestas";
+
+            this.navigationService = navigationService;
+            
+            NewSurveyCommand = new DelegateCommand(ExecuteNewSurveyCommand);
 
             Surveys = new ObservableCollection<Survey>();
-
-            MessagingCenter.Subscribe<SurveyDetailsViewModel, Survey>(this, Messages.NewSurveyComplete, (sender, args) =>
-            {
-                Surveys.Add(args);
-            });
         }
 
-        private void NewSurveyCommandExecute()
+        private async void ExecuteNewSurveyCommand()
         {
-            MessagingCenter.Send(this, Messages.NewSurvey);
+            await navigationService.NavigateAsync($"{nameof(SurveyDetailsView)}");
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            if (parameters.ContainsKey(Messages.NewSurvey))
+            {
+                Surveys.Add(parameters[Messages.NewSurvey] as Survey);
+            }
         }
     }
 }

@@ -1,15 +1,36 @@
 ﻿using LMP.Models;
+using Prism.Commands;
+using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Xamarin.Essentials;
-using Xamarin.Forms;
 
 namespace LMP.ViewModels
 {
-    public class SurveyDetailsViewModel : NotificationObject
+    public class SurveyDetailsViewModel : ViewModelBase
     {
+        private readonly INavigationService navigationService;
+        private readonly IPageDialogService pageDialogService;
+
+        private string title;
+
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                if (title == value)
+                {
+                    return;
+                }
+                title = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string name;
 
         public string Name
@@ -22,7 +43,7 @@ namespace LMP.ViewModels
                     return;
                 }
                 name = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -38,7 +59,7 @@ namespace LMP.ViewModels
                     return;
                 }
                 birthdate = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -54,7 +75,7 @@ namespace LMP.ViewModels
                     return;
                 }
                 favoriteTeam = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -70,7 +91,7 @@ namespace LMP.ViewModels
                     return;
                 }
                 teams = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -78,8 +99,13 @@ namespace LMP.ViewModels
 
         public ICommand EndSurveyCommand { get; set; }
 
-        public SurveyDetailsViewModel()
+        public SurveyDetailsViewModel(INavigationService navigationService, IPageDialogService pageDialogService)
         {
+            Title = "Nueva Encuesta";
+
+            this.navigationService = navigationService;
+            this.pageDialogService = pageDialogService;
+
             Teams = new ObservableCollection<string>(new[]
             {
                 "Águilas de Mexicali",
@@ -94,29 +120,21 @@ namespace LMP.ViewModels
                 "Yaquis de Ciudad Obregón"
             });
 
-            SelectTeamCommand = new Command(SelectTeamCommandExecute);
-
-            EndSurveyCommand = new Command(EndSurveyCommandExecute, EndSurveyCommandCanExecute);
-
-            MessagingCenter.Subscribe<ContentPage, string>(this, Messages.TeamSelected, (sender, args) =>
-            {
-                FavoriteTeam = args;
-            });
-
-            PropertyChanged += SurveyDetailsViewModel_PropertyChanged;
+            SelectTeamCommand = new DelegateCommand(SelectTeamCommandExecute);
+            EndSurveyCommand = new DelegateCommand(EndSurveyCommandExecute, EndSurveyCommandCanExecute)
+                .ObservesProperty(() => Name)
+                .ObservesProperty(() => Birthdate)
+                .ObservesProperty(() => FavoriteTeam);
         }
 
-        private void SurveyDetailsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void SelectTeamCommandExecute()
         {
-            if (e.PropertyName == nameof(Name) || e.PropertyName == nameof(Birthdate) || e.PropertyName == nameof(FavoriteTeam))
+            var teamSelected = await pageDialogService.DisplayActionSheetAsync(Literals.FavoriteTeamTitle, null, null, Teams.ToArray());
+
+            if (!string.IsNullOrWhiteSpace(teamSelected))
             {
-                (EndSurveyCommand as Command)?.ChangeCanExecute();
+                FavoriteTeam = teamSelected;
             }
-        }
-
-        private void SelectTeamCommandExecute()
-        {
-            MessagingCenter.Send(this, Messages.SelectTeam, Teams.ToArray());
         }
 
         private bool EndSurveyCommandCanExecute()
@@ -150,7 +168,7 @@ namespace LMP.ViewModels
                 newSurvey.Lon = 0d;
             }
 
-            MessagingCenter.Send(this, Messages.NewSurveyComplete, newSurvey);
+            await navigationService.GoBackAsync(new NavigationParameters { { Messages.NewSurvey, newSurvey } });
         }
     }
 }

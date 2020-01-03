@@ -5,16 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:iOS="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              iOS:Page.UseSafeArea="True"
-             xmlns:local="clr-namespace:LMP"
-             xmlns:viewModel="clr-namespace:LMP.ViewModels"
-             xmlns:converters="clr-namespace:LMP.Converters"
              mc:Ignorable="d"
+             xmlns:converters="clr-namespace:LMP.Converters"
              x:Class="LMP.Views.SurveysView"
-             Title="{Static local:Literals.SurveysViewTitle}">
-    <ContentPage.BindingContext>
-        <viewModel:SurveysViewModel />
-    </ContentPage.BindingContext>
-
+             Title="{Binding Title, Mode=OneTime}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:TeamColorConverter x:Key="CasacaConverter" />
@@ -42,17 +36,20 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Nueva"
+                     Command="{Binding NewSurveyCommand}">
+            <ToolbarItem.IconImageSource>
+                <OnPlatform x:TypeArguments="FileImageSource"
+                            Android="survey_add.png"
+                            iOS="survey_add.png"
+                            WinPhone="assets/survey_add.png" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
     <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <Button Text="+"
-                Command="{Binding NewSurveyCommand}" />
-
-        <ListView Grid.Row="1"
-                  HasUnevenRows="True"
+        <ListView HasUnevenRows="True"
                   ItemTemplate="{StaticResource SurveyDataTemplate}"
                   ItemsSource="{Binding Surveys}"
                   SelectedItem="{Binding SelectedSurvey, Mode=OneWayToSource}" />
