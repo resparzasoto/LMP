@@ -1,4 +1,5 @@
 ﻿using LMP.Models;
+using LMP.ServiceInterfaces;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
@@ -14,6 +15,7 @@ namespace LMP.ViewModels
     {
         private readonly INavigationService navigationService;
         private readonly IPageDialogService pageDialogService;
+        private readonly ILocalDBService localDBService;
 
         private string title;
 
@@ -99,12 +101,13 @@ namespace LMP.ViewModels
 
         public ICommand EndSurveyCommand { get; set; }
 
-        public SurveyDetailsViewModel(INavigationService navigationService, IPageDialogService pageDialogService)
+        public SurveyDetailsViewModel(INavigationService navigationService, IPageDialogService pageDialogService, ILocalDBService localDBService)
         {
             Title = "Nueva Encuesta";
 
             this.navigationService = navigationService;
             this.pageDialogService = pageDialogService;
+            this.localDBService = localDBService;
 
             Teams = new ObservableCollection<string>(new[]
             {
@@ -146,6 +149,7 @@ namespace LMP.ViewModels
         {
             var newSurvey = new Survey()
             {
+                Id = Guid.NewGuid().ToString(),
                 Name = Name,
                 Birthdate = Birthdate,
                 FavoriteTeam = FavoriteTeam
@@ -168,7 +172,9 @@ namespace LMP.ViewModels
                 newSurvey.Lon = 0d;
             }
 
-            await navigationService.GoBackAsync(new NavigationParameters { { Messages.NewSurvey, newSurvey } });
+            await localDBService.InsertSurveyAsync(newSurvey);
+
+            await navigationService.GoBackAsync();
         }
     }
 }

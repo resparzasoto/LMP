@@ -4,6 +4,8 @@ namespace LMP.Models
 {
     public class Survey
     {
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
         public DateTime Birthdate { get; set; }
@@ -16,7 +18,7 @@ namespace LMP.Models
 
         public override string ToString()
         {
-            return $"{Name} | {Birthdate} | {FavoriteTeam}";
+            return $"{Id} {Name} | {Birthdate} | {FavoriteTeam} | {Lat} | {Lon}";
         }
     }
 }

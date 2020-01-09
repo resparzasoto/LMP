@@ -5,7 +5,5 @@
         protected Messages()
         {
         }
-
-        public const string NewSurvey = "NewSurvey";
     }
 }

@@ -1,8 +1,13 @@
 ﻿using LMP.Models;
+using LMP.ServiceInterfaces;
 using LMP.Views;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LMP.ViewModels
@@ -10,13 +15,15 @@ namespace LMP.ViewModels
     public class SurveysViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private readonly IPageDialogService pageDialogService;
+        private readonly ILocalDBService localDBService;
 
         private string title;
 
         public string Title
         {
             get { return title; }
-            set 
+            set
             {
                 if (title == value)
                 {
@@ -26,6 +33,8 @@ namespace LMP.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public bool IsEmpty => Surveys is null || !Surveys.Any();
 
         private ObservableCollection<Survey> surveys;
 
@@ -61,30 +70,62 @@ namespace LMP.ViewModels
 
         public ICommand NewSurveyCommand { get; set; }
 
-        public SurveysViewModel(INavigationService navigationService)
+        public ICommand DeleteSurveyCommand { get; set; }
+
+        public SurveysViewModel(INavigationService navigationService, IPageDialogService pageDialogService, ILocalDBService localDBService)
         {
             Title = "Encuestas";
 
             this.navigationService = navigationService;
-            
-            NewSurveyCommand = new DelegateCommand(ExecuteNewSurveyCommand);
+            this.pageDialogService = pageDialogService;
+            this.localDBService = localDBService;
+
+            NewSurveyCommand = new DelegateCommand(NewSurveyCommandExecute);
+            DeleteSurveyCommand = new DelegateCommand(DeleteSurveyCommandExecute, DeleteCommandCanExecute).ObservesProperty(() => SelectedSurvey);
 
             Surveys = new ObservableCollection<Survey>();
         }
 
-        private async void ExecuteNewSurveyCommand()
+        private async void NewSurveyCommandExecute()
         {
             await navigationService.NavigateAsync($"{nameof(SurveyDetailsView)}");
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        private bool DeleteCommandCanExecute()
+        {
+            return SelectedSurvey != null;
+        }
+
+        private async void DeleteSurveyCommandExecute()
+        {
+            var result =
+                await pageDialogService.DisplayAlertAsync(Literals.DeleteSurveyTitle, Literals.DeleteSurveyConfirmation, Literals.OK, Literals.Cancel);
+
+            if (result)
+            {
+                await localDBService.DeleteSurveyAysnc(SelectedSurvey);
+                await LoadSurveysAsync();
+            }
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
-            if (parameters.ContainsKey(Messages.NewSurvey))
+            await LoadSurveysAsync();
+        }
+
+        private async Task LoadSurveysAsync()
+        {
+            var allSurveys = await localDBService.GetAllSurveysAsync();
+
+            if (allSurveys != null)
             {
-                Surveys.Add(parameters[Messages.NewSurvey] as Survey);
+                Surveys = new ObservableCollection<Survey>(allSurveys);
             }
+
+            SelectedSurvey = null;
+            RaisePropertyChanged(nameof(IsEmpty));
         }
     }
 }

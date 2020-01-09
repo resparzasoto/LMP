@@ -46,6 +46,15 @@
                             WinPhone="assets/survey_add.png" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
+        <ToolbarItem Text="Borrar"
+                     Command="{Binding DeleteSurveyCommand}">
+            <ToolbarItem.IconImageSource>
+                <OnPlatform x:TypeArguments="FileImageSource"
+                            Android="survey_delete.png"
+                            iOS="survey_delete.png"
+                            WinPhone="assets/survey_delete.png" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
 
     <Grid Margin="10">
@@ -53,5 +62,15 @@
                   ItemTemplate="{StaticResource SurveyDataTemplate}"
                   ItemsSource="{Binding Surveys}"
                   SelectedItem="{Binding SelectedSurvey, Mode=OneWayToSource}" />
+        <Grid IsVisible="{Binding IsEmpty}">
+            <StackLayout VerticalOptions="Center">
+                <Label Text="¡No hay encuestas!"
+                       FontSize="Title"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Pero es buen momento de crear una"
+                       FontSize="Subtitle"
+                       HorizontalTextAlignment="Center" />
+            </StackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

@@ -1,4 +1,6 @@
-﻿using LMP.ViewModels;
+﻿using LMP.ServiceInterfaces;
+using LMP.Services;
+using LMP.ViewModels;
 using LMP.Views;
 using Prism.Ioc;
 using Prism.Unity;
@@ -22,6 +24,8 @@ namespace LMP
             containerRegistry.RegisterForNavigation<SurveysView, SurveysViewModel>();
             containerRegistry.RegisterForNavigation<SurveyDetailsView, SurveyDetailsViewModel>();
             containerRegistry.RegisterForNavigation<AboutView, AboutViewModel>();
+
+            containerRegistry.RegisterInstance<ILocalDBService>(new LocalDBService());
         }
     }
 }
