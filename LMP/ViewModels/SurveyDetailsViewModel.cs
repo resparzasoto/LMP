@@ -1,10 +1,10 @@
-﻿using LMP.Models;
+﻿using LMP.Entities;
 using LMP.ServiceInterfaces;
+using LMP.Views;
 using Prism.Commands;
 using Prism.Navigation;
-using Prism.Services;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -14,8 +14,8 @@ namespace LMP.ViewModels
     public class SurveyDetailsViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        private readonly IPageDialogService pageDialogService;
         private readonly ILocalDBService localDBService;
+        private IEnumerable<Team> localDBTeams;
 
         private string title;
 
@@ -81,47 +81,16 @@ namespace LMP.ViewModels
             }
         }
 
-        private ObservableCollection<string> teams;
-
-        public ObservableCollection<string> Teams
-        {
-            get { return teams; }
-            set
-            {
-                if (teams == value)
-                {
-                    return;
-                }
-                teams = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public ICommand SelectTeamCommand { get; set; }
 
         public ICommand EndSurveyCommand { get; set; }
 
-        public SurveyDetailsViewModel(INavigationService navigationService, IPageDialogService pageDialogService, ILocalDBService localDBService)
+        public SurveyDetailsViewModel(INavigationService navigationService, ILocalDBService localDBService)
         {
             Title = "Nueva Encuesta";
 
             this.navigationService = navigationService;
-            this.pageDialogService = pageDialogService;
             this.localDBService = localDBService;
-
-            Teams = new ObservableCollection<string>(new[]
-            {
-                "Águilas de Mexicali",
-                "Algodoneros de Guasave",
-                "Cañeros de Los Mochis",
-                "Charros de Jalisco",
-                "Mayos de Navojoa",
-                "Naranjeros de Hermosillo",
-                "Sultanes de Monterrey",
-                "Tomateros de Culiacán",
-                "Venados de Mazatlán",
-                "Yaquis de Ciudad Obregón"
-            });
 
             SelectTeamCommand = new DelegateCommand(SelectTeamCommandExecute);
             EndSurveyCommand = new DelegateCommand(EndSurveyCommandExecute, EndSurveyCommandCanExecute)
@@ -130,14 +99,26 @@ namespace LMP.ViewModels
                 .ObservesProperty(() => FavoriteTeam);
         }
 
+        public override async void Initialize(INavigationParameters parameters)
+        {
+            base.Initialize(parameters);
+
+            localDBTeams = await localDBService.GetAllTeamsAsync();
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            if (parameters.ContainsKey("Id"))
+            {
+                FavoriteTeam = localDBTeams.First(t => t.Id == (int)parameters["Id"]).Name;
+            }
+        }
+
         private async void SelectTeamCommandExecute()
         {
-            var teamSelected = await pageDialogService.DisplayActionSheetAsync(Literals.FavoriteTeamTitle, null, null, Teams.ToArray());
-
-            if (!string.IsNullOrWhiteSpace(teamSelected))
-            {
-                FavoriteTeam = teamSelected;
-            }
+            await navigationService.NavigateAsync(nameof(TeamSelectionView), null, true, true);
         }
 
         private bool EndSurveyCommandCanExecute()
@@ -152,7 +133,7 @@ namespace LMP.ViewModels
                 Id = Guid.NewGuid().ToString(),
                 Name = Name,
                 Birthdate = Birthdate,
-                FavoriteTeam = FavoriteTeam
+                TeamId = localDBTeams.First(t => t.Name == FavoriteTeam).Id
             };
 
             try

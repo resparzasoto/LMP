@@ -3,8 +3,12 @@ using Prism.Navigation;
 
 namespace LMP
 {
-    public class ViewModelBase : BindableBase, INavigationAware
+    public abstract class ViewModelBase : BindableBase, INavigationAware, IInitialize
     {
+        public virtual void Initialize(INavigationParameters parameters)
+        {
+        }
+
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
         }

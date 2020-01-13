@@ -15,22 +15,34 @@
 
             <DataTemplate x:Key="SurveyDataTemplate">
                 <ViewCell>
-                    <StackLayout Margin="10">
-                        <Label FontSize="Title"
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="{Binding Team.Logo}"
+                               HeightRequest="100"
+                               WidthRequest="100"
+                               HorizontalOptions="Start" />
+                        <StackLayout Grid.Column="1"
+                                     Margin="10">
+                            <Label FontSize="Title"
                                FontAttributes="Bold"
                                Text="{Binding Name}" />
-                        <Label FontSize="Body"
+                            <Label FontSize="Body"
                                Text="{Binding Birthdate, StringFormat='{0:dd/MM/yyyy}'}" />
-                        <Label FontSize="Body"
-                               Text="{Binding FavoriteTeam}"
-                               TextColor="{Binding FavoriteTeam, Converter={StaticResource CasacaConverter}}" />
-                        <StackLayout Orientation="Horizontal">
                             <Label FontSize="Body"
+                               Text="{Binding Team.Name}"
+                               TextColor="{Binding Team.Color}" />
+                            <StackLayout Orientation="Horizontal">
+                                <Label FontSize="Body"
                                    Text="{Binding Lat, Mode=OneWay, StringFormat='Lat: {0:N4}'}" />
-                            <Label FontSize="Body"
+                                <Label FontSize="Body"
                                    Text="{Binding Lon, Mode=OneWay, StringFormat='Lon: {0:N4}'}" />
+                            </StackLayout>
                         </StackLayout>
-                    </StackLayout>
+                    </Grid>
                 </ViewCell>
             </DataTemplate>
         </ResourceDictionary>

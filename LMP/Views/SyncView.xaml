@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             ios:Page.UseSafeArea="True"
+             mc:Ignorable="d"
+             x:Class="LMP.Views.SyncView"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems >
+        <ToolbarItem Text="Sincronizar" Command="{Binding SyncCommand}">
+            <ToolbarItem.IconImageSource>
+                <OnPlatform x:TypeArguments="FileImageSource"
+                            Android="sync.png"
+                            iOS="sync.png"
+                            WinPhone="assets/sync.png" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <Grid Margin="10">
+        <Label Text="{Binding Status}"
+               VerticalOptions="Center"
+               HorizontalTextAlignment="Center">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Style.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding IsBusy}"
+                                     Value="True">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

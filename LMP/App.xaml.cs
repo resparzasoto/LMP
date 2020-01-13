@@ -23,9 +23,12 @@ namespace LMP
             containerRegistry.RegisterForNavigation<RootNavigationPage>();
             containerRegistry.RegisterForNavigation<SurveysView, SurveysViewModel>();
             containerRegistry.RegisterForNavigation<SurveyDetailsView, SurveyDetailsViewModel>();
+            containerRegistry.RegisterForNavigation<TeamSelectionView, TeamSelectionViewModel>();
+            containerRegistry.RegisterForNavigation<SyncView, SyncViewModel>();
             containerRegistry.RegisterForNavigation<AboutView, AboutViewModel>();
 
             containerRegistry.RegisterInstance<ILocalDBService>(new LocalDBService());
+            containerRegistry.RegisterInstance<IWebAPIService>(new WebAPIService());
         }
     }
 }

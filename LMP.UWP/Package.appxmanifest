@@ -8,7 +8,7 @@
 
   <Identity
     Name="1b9d5048-2628-4f2c-90cd-03ab81bfbf16"
-    Publisher="CN=f4cf5e28-d5bd-4057-aa5a-7bbfcafe110c"
+    Publisher="CN=Rubén Esparza"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

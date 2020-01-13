@@ -1,4 +1,4 @@
-﻿using LMP.Models;
+﻿using LMP.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,6 +10,14 @@ namespace LMP.ServiceInterfaces
 
         Task InsertSurveyAsync(Survey survey);
 
-        Task DeleteSurveyAysnc(Survey survey);
+        Task DeleteSurveyAsync(Survey survey);
+
+        Task DeleteAllSurveysAsync();
+
+        Task DeleteAllTeamsAsync();
+
+        Task InsertTeamsAsync(IEnumerable<Team> teams);
+
+        Task<IEnumerable<Team>> GetAllTeamsAsync();
     }
 }

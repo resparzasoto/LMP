@@ -11,7 +11,7 @@ namespace LMP.UWP.Services
         public SQLiteConnection GetConnection()
         {
             var localDBFile =
-                System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "Surveys.db");
+                System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "LMP.db");
 
             return new SQLiteConnection(localDBFile);
         }

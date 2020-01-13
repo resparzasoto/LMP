@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LMP.Models
+namespace LMP.Entities
 {
     public class Survey
     {
@@ -10,7 +10,7 @@ namespace LMP.Models
 
         public DateTime Birthdate { get; set; }
 
-        public string FavoriteTeam { get; set; }
+        public int TeamId { get; set; }
 
         public double Lat { get; set; }
 
@@ -18,7 +18,7 @@ namespace LMP.Models
 
         public override string ToString()
         {
-            return $"{Id} {Name} | {Birthdate} | {FavoriteTeam} | {Lat} | {Lon}";
+            return $"{Id} {Name} | {Birthdate} | {TeamId} | {Lat} | {Lon}";
         }
     }
 }

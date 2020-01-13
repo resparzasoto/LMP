@@ -1,10 +1,8 @@
-﻿using LMP.Models;
-using LMP.ServiceInterfaces;
+﻿using LMP.ServiceInterfaces;
 using LMP.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,9 +34,9 @@ namespace LMP.ViewModels
 
         public bool IsEmpty => Surveys is null || !Surveys.Any();
 
-        private ObservableCollection<Survey> surveys;
+        private ObservableCollection<SurveyViewModel> surveys;
 
-        public ObservableCollection<Survey> Surveys
+        public ObservableCollection<SurveyViewModel> Surveys
         {
             get { return surveys; }
             set
@@ -52,9 +50,9 @@ namespace LMP.ViewModels
             }
         }
 
-        private Survey selectedSurvey;
+        private SurveyViewModel selectedSurvey;
 
-        public Survey SelectedSurvey
+        public SurveyViewModel SelectedSurvey
         {
             get { return selectedSurvey; }
             set
@@ -83,7 +81,14 @@ namespace LMP.ViewModels
             NewSurveyCommand = new DelegateCommand(NewSurveyCommandExecute);
             DeleteSurveyCommand = new DelegateCommand(DeleteSurveyCommandExecute, DeleteCommandCanExecute).ObservesProperty(() => SelectedSurvey);
 
-            Surveys = new ObservableCollection<Survey>();
+            Surveys = new ObservableCollection<SurveyViewModel>();
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            await LoadSurveysAsync();
         }
 
         private async void NewSurveyCommandExecute()
@@ -103,25 +108,20 @@ namespace LMP.ViewModels
 
             if (result)
             {
-                await localDBService.DeleteSurveyAysnc(SelectedSurvey);
+                await localDBService.DeleteSurveyAsync(SurveyViewModel.GetEntityFromViewModel(SelectedSurvey));
                 await LoadSurveysAsync();
             }
         }
 
-        public override async void OnNavigatedTo(INavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-
-            await LoadSurveysAsync();
-        }
 
         private async Task LoadSurveysAsync()
         {
+            var localDBTeams = await localDBService.GetAllTeamsAsync();
             var allSurveys = await localDBService.GetAllSurveysAsync();
 
             if (allSurveys != null)
             {
-                Surveys = new ObservableCollection<Survey>(allSurveys);
+                Surveys = new ObservableCollection<SurveyViewModel>(allSurveys.Select(s => SurveyViewModel.GetViewModelFromEntity(s, localDBTeams)));
             }
 
             SelectedSurvey = null;

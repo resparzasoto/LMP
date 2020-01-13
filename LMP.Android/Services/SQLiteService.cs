@@ -10,7 +10,7 @@ namespace LMP.Droid.Services
         public SQLiteConnection GetConnection()
         {
             var localDBFile =
-                System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Surveys.db");
+                System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "LMP.db");
 
             return new SQLiteConnection(localDBFile);
         }

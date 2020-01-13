@@ -7765,10 +7765,13 @@ namespace LMP.Droid
 			public const int survey_delete = 2131165304;
 			
 			// aapt resource value: 0x7F070079
-			public const int tooltip_frame_dark = 2131165305;
+			public const int sync = 2131165305;
 			
 			// aapt resource value: 0x7F07007A
-			public const int tooltip_frame_light = 2131165306;
+			public const int tooltip_frame_dark = 2131165306;
+			
+			// aapt resource value: 0x7F07007B
+			public const int tooltip_frame_light = 2131165307;
 			
 			static Drawable()
 			{
@@ -13397,7 +13400,10 @@ namespace LMP.Droid
 		{
 			
 			// aapt resource value: 0x7F100000
-			public const int xamarin_essentials_fileprovider_file_paths = 2131755008;
+			public const int network_security_config = 2131755008;
+			
+			// aapt resource value: 0x7F100001
+			public const int xamarin_essentials_fileprovider_file_paths = 2131755009;
 			
 			static Xml()
 			{
